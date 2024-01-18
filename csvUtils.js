@@ -33,9 +33,3 @@ function searchAndWriteCSV(inputFilePath, outputFilePath, regexPattern) {
         });
     });
 }
-
-const inputFilePath = 'input.csv';
-const outputFilePath = 'output.csv';
-const regexPattern = /How Did You Hear About Fifty Flowers\?\s+(.*)$/;
-
-searchAndWriteCSV(inputFilePath, outputFilePath, regexPattern);
