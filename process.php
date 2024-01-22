@@ -22,16 +22,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
             while (($line = fgetcsv($file)) !== FALSE) {
               foreach ($line as $cell) {
 
-                if (preg_match('/"name":"([^"]+)"/', $cell, $matchesName)) {
-                  $name = $matchesName[1];
+                if (preg_match("/How Did You Hear About Fifty Flowers\?\s+(.*?)\s+What/", $cell, $matches)) {
+                  if (isset($matches[1])) {
+                      $cleanedMatch = str_replace('"', '', $matches[1]);
+                  }
                 }
 
-                  if (preg_match("/How Did You Hear About Fifty Flowers\?\s+(.*?)\s+What/", $cell, $matches)) {
-                      if (isset($matches[1])) {
-                          $cleanedMatch = str_replace('"', '', $matches[1]);
-                          fputcsv($outputFile, [$name, $cleanedMatch]);
-                      }
-                  }
+                if (preg_match('/"name":"([^"]+)"/', $cell, $matchesName)) {
+                  $name = $matchesName[1];
+                  fputcsv($outputFile, [$name, $cleanedMatch]);
+                }
+
+                  
               }
           }
             fclose($file);
