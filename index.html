@@ -3,21 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Read Consult Booking Data</title>
+    <title>File Upload Form</title>
 </head>
 <body>
-    <script src="./main.js"></script>
-    <script src="./csvUtils.js"></script>"
-
-    <h1>Read Consult Booking Data</h1>
-    <h3>Upload a CSV file to read and write to a new CSV file</h3> 
-
+    <h1>File Upload Form</h1>
+    
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="fileInput">
         <button type="button" onclick="uploadFile()">Upload File</button>
     </form>
     
     <div id="uploadStatus"></div>
+    <script src="./bundle.js"></script>
+    <script>
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            
+            const formattedDate = `${year}-${month}-${day}`;
+            return formattedDate;
+        }
 
+        const currentDate = getCurrentDate();
+        const inputFilePath = './input-files/consult-booking-data.csv';
+        const outputFilePath = `./output-files/consult-booking-data-output_${currentDate}.csv`;
+        const regexPattern = /How Did You Hear About Fifty Flowers\?\s+(.*)$/;
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const formData = new FormData();
+
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+
+                searchAndWriteCSV(inputFilePath, outputFilePath, regexPattern);
+
+                uploadStatus.innerHTML = 'File uploaded successfully!';
+            } else {
+                uploadStatus.innerHTML = 'Please select a file to upload.';
+            }
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', function () {
+            uploadFile();
+        });
+    </script>
 </body>
 </html>

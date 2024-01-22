@@ -2,7 +2,11 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-function searchAndWriteCSV(inputFilePath, outputFilePath, regexPattern) {
+global.searchAndWriteCSV = function (
+  inputFilePath,
+  outputFilePath,
+  regexPattern
+) {
   const results = [];
 
   fs.createReadStream(inputFilePath)
@@ -32,4 +36,4 @@ function searchAndWriteCSV(inputFilePath, outputFilePath, regexPattern) {
           console.error('Error writing CSV file:', error);
         });
     });
-}
+};
