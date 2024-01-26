@@ -1,10 +1,33 @@
 <?php
+
+function deleteOldFiles() {
+    $directory = 'output-files/';
+    $files = scandir($directory);
+    $current_time = time();
+
+    foreach ($files as $file) {
+        if (is_dir($directory . $file)) {
+            continue;
+        }
+
+        $file_creation_time = filemtime($directory . $file);
+        $age_in_days = ($current_time - $file_creation_time) / 86400; // 86400 seconds in a day
+
+        if ($age_in_days > 365) {
+            unlink($directory . $file);
+            echo "Deleted file: " . $file . "\n";
+        }
+    }
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
     if ($_FILES["fileToUpload"]["error"] == 0) {
         $inputDirectory = "input-files";
         $outputDirectory = "output-files";
         $inputFileName = $_FILES["fileToUpload"]["tmp_name"];
-        $outputFileName = "results_" . date("Y-m-d") . ".csv";
+        $outputFileName = "results_" . date("Y-m-d") . '_' . date("H-i-s") . ".csv";
+
+        deleteOldFiles();
 
         if (!file_exists($inputDirectory)) {
             mkdir($inputDirectory);
@@ -40,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["fileToUpload"])) {
             fclose($outputFile);
 
             $message = "Processing complete. File ready for download.";
+            unlink($filePath);
             header("Location: index.php?message=".urlencode($message)."&file=".urlencode($outputFilePath));
             exit;
         } else {
